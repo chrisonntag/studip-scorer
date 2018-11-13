@@ -149,7 +149,7 @@ class StudIPScoreSession:
 
 def main():
     with open('credentials.cfg', 'r') as file:
-        username, password = file.readline().replace('\n', '').split(':')
+        username, password = file.readline().replace('\n', '').split(',')
 
     event_loop = asyncio.get_event_loop()
     session = StudIPScoreSession(username, password, event_loop)
