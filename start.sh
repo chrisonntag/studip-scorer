@@ -1,2 +1,2 @@
 #!/bin/sh
-python studip_scorer/__init__.py
+python3 studip_scorer/__init__.py
