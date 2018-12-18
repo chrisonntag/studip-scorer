@@ -30,6 +30,9 @@ NEWS_DICT = {
         "allow_comments": 1
         }
 
+print(BASE_URL)
+print(COURSE_ID)
+print(NEWS_DICT)
 
 class StudIPError(Exception):
     pass
