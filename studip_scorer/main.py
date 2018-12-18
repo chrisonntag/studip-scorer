@@ -24,8 +24,8 @@ config.read(os.path.join(PROJ_DIR, 'config.cfg'))
 BASE_URL = config.get('studip', 'base_url')
 COURSE_ID = config.get('studip', 'course_id')
 NEWS_DICT = {
-        "topic": "Ankündigung %s" % datetime.today(),
-        "body": "Das ist eine automatisch generierte Ankündigung.",
+        "topic": "Ankündigung vom %s" % post_date.strftime('%d. %b %Y um %H:%M'),
+        "body": "Dies ist eine automatisch generierte Ankündigung, um den Stud.IP Rang zu erhöhen. \nSie läuft um %s ab!" % end_date.strftime('%H:%M Uhr'),
         "expire": config.getint('news', 'expire_time'),
         "allow_comments": 1
         }
@@ -119,10 +119,8 @@ class StudIPScoreSession:
     async def create_news(self, form_data, course_id):
         async with self.ahttp.post(self._studip_url("/studip/api.php/course/%s/news" % course_id), data=form_data) as r:
             await r.text()
-            if r.status == 200:
+            if r.status == 200 or r.status == 201:
                 response_data = await r.text()
-                print('Success')
-                print(str(response_data))
                 return True
             else:
                 response_data = await r.text()
