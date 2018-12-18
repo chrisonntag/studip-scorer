@@ -1,7 +1,7 @@
 # studip-scorer (aka Klaus)
 ## Install
 
-Rename ```config_sample.cfg``` to ```config.cfg``` and fill in your own username password combination and all other required fields.
+Rename ```config_sample.cfg``` to ```config.cfg``` and fill in your own username password combination and all other required fields. You can simply copy the course id out of your browsers address field.
 
 After that, setup a cronjob pointing at the ```start.sh``` script. Also make sure that this file is executable.
 
