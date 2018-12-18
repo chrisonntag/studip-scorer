@@ -12,7 +12,7 @@ from datetime import datetime
 import aiohttp
 from aiohttp import ClientError
 
-#from .parsers import *
+from parsers import *
 
 
 PROJ_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
