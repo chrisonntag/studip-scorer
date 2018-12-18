@@ -16,7 +16,13 @@ from parsers import *
 
 
 BASE_URL = 'https://studip.uni-passau.de/studip/api.php'
-
+COURSE_ID = '5d59c8f587ed7cfc1e01b35dab582e6e'
+NEWS_DICT = {
+        "topic": "Ankündigung %s" % datetime.today(),
+        "body": "Das ist eine automatisch generierte Ankündigung.",
+        "expire": 86400, # 24hrs
+        "allow_comments": 1
+        }
 
 class StudIPError(Exception):
     pass
@@ -100,14 +106,8 @@ class StudIPScoreSession:
             return response['user_id']
 
 
-    async def create_news(self):
-        form_data = {
-                "topic": "Ankündigung %s" % datetime.today(),
-                "body": "Das ist eine automatisch generierte Ankündigung.",
-                "expire": 86400, # 24hrs
-                "allow_comments": 1
-                }
-        async with self.ahttp.post(self._studip_url("/studip/api.php/course/5d59c8f587ed7cfc1e01b35dab582e6e/news"), data=form_data) as r:
+    async def create_news(self, form_data, course_id):
+        async with self.ahttp.post(self._studip_url("/studip/api.php/course/%s/news" % course_id), data=form_data) as r:
             await r.text()
             if r.status == 200:
                 response_data = await r.text()
@@ -132,7 +132,7 @@ def main():
         try:
             coro = session.do_login()
             event_loop.run_until_complete(coro)
-            event_loop.run_until_complete(session.create_news())
+            event_loop.run_until_complete(session.create_news(NEWS_DICT, COURSE_ID))
         finally:
             async def shutdown_session_async(session):
                 await session.close()
