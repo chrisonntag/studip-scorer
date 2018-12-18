@@ -149,7 +149,7 @@ class StudIPScoreSession:
 
 def main():
     with open('credentials.cfg', 'r') as file:
-        username, password = file.readline().replace('\n', '').split(',')
+        username, password = file.readline().split('\n')
 
     event_loop = asyncio.get_event_loop()
     session = StudIPScoreSession(username, password, event_loop)
@@ -157,7 +157,6 @@ def main():
     try:
         coro = session.do_login()
         event_loop.run_until_complete(coro)
-        #event_loop.run_until_complete(session.create_folder('TestNeu'))
         event_loop.run_until_complete(session.create_news())
     finally:
         async def shutdown_session_async(session):
