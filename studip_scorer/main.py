@@ -12,10 +12,18 @@ from datetime import datetime
 import aiohttp
 from aiohttp import ClientError
 
-from studip_api.parsers import *
-from studip_api.session import StudIPError, LoginError
+from parsers import *
+
 
 BASE_URL = 'https://studip.uni-passau.de/studip/api.php'
+
+
+class StudIPError(Exception):
+    pass
+
+
+class LoginError(StudIPError):
+    pass
 
 
 class StudIPScoreSession:
@@ -91,39 +99,6 @@ class StudIPScoreSession:
             response = await r.json()
             return response['user_id']
 
-    async def create_wiki_site(self, keyword, content):
-        # FAILS
-        form_data = {"content": "Neuer Inhalt pipapo"}
-        async with self.ahttp.put(self._studip_url("/studip/api.php/course/5d59c8f587ed7cfc1e01b35dab582e6e/wiki/" + keyword), data=form_data) as r:
-            await r.text()
-            if r.status == 200:
-                response_data = await r.text()
-                print('Success')
-                print(str(response_data))
-                return True
-            else:
-                response_data = await r.text()
-                print('Failure with HTTP Status Code %d' % r.status)
-                print(r.request_info)
-                print(str(response_data))
-                return False
-
-    async def create_folder(self, name):
-        # FAILS
-        form_data = {"name": "NeuGanzNeu"}
-        async with self.ahttp.post(self._studip_url("/studip/api.php/folder/a77592398bb9094be72e7ea10ed4d3a3/NeuGanzNeu"), data=form_data) as r:
-            await r.text()
-            if r.status == 200:
-                response_data = await r.text()
-                print('Success')
-                print(str(response_data))
-                return True
-            else:
-                response_data = await r.text()
-                print('Failure with HTTP Status Code %d' % r.status)
-                print(r.request_info)
-                print(str(response_data))
-                return False
 
     async def create_news(self):
         form_data = {
@@ -151,17 +126,17 @@ def main():
     with open('credentials.cfg', 'r') as file:
         username, password = file.readline().split('\n')
 
-    event_loop = asyncio.get_event_loop()
-    session = StudIPScoreSession(username, password, event_loop)
+        event_loop = asyncio.get_event_loop()
+        session = StudIPScoreSession(username, password, event_loop)
 
-    try:
-        coro = session.do_login()
-        event_loop.run_until_complete(coro)
-        event_loop.run_until_complete(session.create_news())
-    finally:
-        async def shutdown_session_async(session):
-            await session.close()
+        try:
+            coro = session.do_login()
+            event_loop.run_until_complete(coro)
+            event_loop.run_until_complete(session.create_news())
+        finally:
+            async def shutdown_session_async(session):
+                await session.close()
 
-        event_loop.run_until_complete(shutdown_session_async(session))
+            event_loop.run_until_complete(shutdown_session_async(session))
 
 
