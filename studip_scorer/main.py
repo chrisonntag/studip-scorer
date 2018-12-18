@@ -2,27 +2,34 @@ import getpass
 import asyncio
 import logging
 import os
+import configparser
 import ssl
 import time
 from typing import List
 from urllib.parse import urlencode
 from weakref import WeakSet
 from datetime import datetime
-
 import aiohttp
 from aiohttp import ClientError
 
-from parsers import *
+#from .parsers import *
 
 
-BASE_URL = 'https://studip.uni-passau.de/studip/api.php'
-COURSE_ID = '5d59c8f587ed7cfc1e01b35dab582e6e'
+PROJ_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+config = configparser.RawConfigParser()
+config.read(os.path.join(PROJ_DIR, 'config.cfg'))
+
+
+BASE_URL = config.get('studip', 'base_url')
+COURSE_ID = config.get('studip', 'course_id')
 NEWS_DICT = {
         "topic": "Ankündigung %s" % datetime.today(),
         "body": "Das ist eine automatisch generierte Ankündigung.",
-        "expire": 86400, # 24hrs
+        "expire": config.getint('news', 'expire_time'),
         "allow_comments": 1
         }
+
 
 class StudIPError(Exception):
     pass
@@ -123,20 +130,19 @@ class StudIPScoreSession:
 
 
 def main():
-    with open('credentials.cfg', 'r') as file:
-        username, password = file.readline().split('\n')
+    username = config.get('studip', 'username')
+    password = config.get('studip', 'password')
 
-        event_loop = asyncio.get_event_loop()
-        session = StudIPScoreSession(username, password, event_loop)
+    event_loop = asyncio.get_event_loop()
+    session = StudIPScoreSession(username, password, event_loop)
 
-        try:
-            coro = session.do_login()
-            event_loop.run_until_complete(coro)
-            event_loop.run_until_complete(session.create_news(NEWS_DICT, COURSE_ID))
-        finally:
-            async def shutdown_session_async(session):
-                await session.close()
+    try:
+        coro = session.do_login()
+        event_loop.run_until_complete(coro)
+        event_loop.run_until_complete(session.create_news(NEWS_DICT, COURSE_ID))
+    finally:
+        async def shutdown_session_async(session):
+            await session.close()
 
-            event_loop.run_until_complete(shutdown_session_async(session))
-
+        event_loop.run_until_complete(shutdown_session_async(session))
 
