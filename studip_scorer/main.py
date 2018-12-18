@@ -24,15 +24,12 @@ config.read(os.path.join(PROJ_DIR, 'config.cfg'))
 BASE_URL = config.get('studip', 'base_url')
 COURSE_ID = config.get('studip', 'course_id')
 NEWS_DICT = {
-        "topic": "Ankündigung vom %s" % post_date.strftime('%d. %b %Y um %H:%M'),
-        "body": "Dies ist eine automatisch generierte Ankündigung, um den Stud.IP Rang zu erhöhen. \nSie läuft um %s ab!" % end_date.strftime('%H:%M Uhr'),
+        "topic": "Ankündigung vom %s",
+        "body": "Dies ist eine automatisch generierte Ankündigung, um den Stud.IP Rang zu erhöhen. \nSie läuft um %s ab!",
         "expire": config.getint('news', 'expire_time'),
         "allow_comments": 1
         }
 
-print(BASE_URL)
-print(COURSE_ID)
-print(NEWS_DICT)
 
 class StudIPError(Exception):
     pass
@@ -117,6 +114,13 @@ class StudIPScoreSession:
 
 
     async def create_news(self, form_data, course_id):
+        from datetime import datetime, timedelta
+
+        post_date = datetime.now()
+        end_date = datetime.now() + timedelta(hours=2)
+        form_data['body'] = form_data['body'] % end_date.strftime('%H:%M Uhr')
+        form_data['topic'] = form_data['topic'] % post_date.strftime('%d. %b %Y um %H:%M')
+
         async with self.ahttp.post(self._studip_url("/studip/api.php/course/%s/news" % course_id), data=form_data) as r:
             await r.text()
             if r.status == 200 or r.status == 201:
