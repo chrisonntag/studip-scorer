@@ -9,6 +9,7 @@
 
 # Own
 config.cfg
+supervise/  # used by cronjob
 
 
 # Created by git when using merge tools for conflicts
