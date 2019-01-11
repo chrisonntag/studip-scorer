@@ -30,3 +30,16 @@ def parse_saml_form(html):
 
     return form_data
 
+def parse_user_points(html):
+    soup = BeautifulSoup(html, 'lxml')
+    for content in soup.find_all('a', title='Zur Rangliste'):
+        if "Stud.IP-Punkte:" in content.text:
+            scoreString = content.text.split()[1].replace('.', '')
+            return int(scoreString)
+    for content in soup.find_all('a', title='To the high score list'):
+        if "Stud.IP-Score:" in content.text:
+            scoreString = content.text.split()[1].replace('.', '')
+            return int(scoreString)
+
+    raise ParserError("Could not find user points", soup)
+
