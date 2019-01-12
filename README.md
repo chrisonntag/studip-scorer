@@ -2,26 +2,36 @@
 
 Generate Stud.IP points automagically by creating announcements in a configurable course.
 
-## Rival mode
-Want to annoy your trash talking professor?
-Does a colleague mock you for you Stud.IP rank?
-studip-scorer has the option to generate points until you have more points than a configurable rival user.
-This way, you'll always be right in front of them, no matter how active they are!
-
-Note: Checking whether your rival has more points than you requires their rank to be publicly visible on their profile page.
+Have fun and rule your local Stud.IP university ranking!
 
 ## Install
 
-Rename `config_sample.cfg` to `config.cfg` and fill in your own username password combination and all other required fields. You can simply copy the course id out of your browsers address field. Make sure you have the required permissions to post announcements in your chosen course.
+Execute `./install.sh`. It creates a virtual environment and installs all required packages.
 
-After that, setup a cronjob pointing at the `start.sh` script. Also make sure that this file is executable.
+Rename `config_sample.cfg` to `config.cfg` and fill in your own username password combination and all other required fields.
+You can simply copy the course id out of your browsers address field.
+Make sure you have the required permissions to post announcements in your chosen course.
+
+After that, setup a cronjob pointing at the `start.sh` script. Also make sure `start.sh` is executable.
 
 ```bash
 */15 * * * * ~/cronjobs/studip-scorer/start.sh
 MAILTO="<youraddress@yourdomain.yourtld"
 ```
+In this example, studip-scorer is executed every 15 minutes.
 
-Have fun and rule your local Stud.IP university ranking. According to the Stud.IP source code you can reach following levels of prestige where the point limits are all power of 2s: 
+## Rival mode
+Want to annoy your trash talking professor?
+Does a colleague mock you for your Stud.IP rank?
+
+studip-scorer has the option to generate points until you have more points than a configurable rival user.
+This way, you'll always be right in front of them, no matter how active they are!
+
+Note: Checking whether your rival has more points than you requires their rank to be publicly visible on their profile page.
+
+## Possible accomplishments
+
+According to the Stud.IP source code you can reach following levels of prestige where the point limits are all power of 2s: 
 
 ```
 Unbeschriebenes Blatt: 1-4

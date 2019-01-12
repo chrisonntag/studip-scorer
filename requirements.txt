@@ -13,5 +13,5 @@ lxml==4.2.5
 more-itertools==4.3.0
 multidict==4.4.2
 six==1.11.0
-studip-api==2.2
+-e git+https://github.com/N-Coder/studip-api.git@master#egg=studip-api
 yarl==1.2.6
