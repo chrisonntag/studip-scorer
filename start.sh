@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 WD="$(cd "$(dirname "$0")"; pwd -P)"
 SOURCE="$WD/env/bin/activate"
 MAIN="$WD/studip_scorer/__init__.py"
