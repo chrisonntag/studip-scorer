@@ -8,6 +8,9 @@ import attr
 from bs4 import BeautifulSoup
 
 
+class ParserError(Exception):
+    pass
+
 def parse_login_form(html):
     soup = BeautifulSoup(html, 'lxml')
 
