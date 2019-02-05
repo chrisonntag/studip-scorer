@@ -20,6 +20,7 @@ PROJ_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config = configparser.RawConfigParser()
 config.read(os.path.join(PROJ_DIR, 'config.cfg'))
 
+USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A5370a Safari/604.1"
 BASE_URL = config.get('studip', 'base_url')
 COURSE_ID = config.get('studip', 'course_id')
 EXPIRE_TIME = config.getint('news', 'expire_time')
@@ -65,7 +66,8 @@ class StudIPScoreSession:
                                          ssl=context)
         self.ahttp = aiohttp.ClientSession(connector=connector, loop=self._loop,
                                            read_timeout=30,
-                                           conn_timeout=30)
+                                           conn_timeout=30,
+                                           headers={'User-Agent': USER_AGENT})
 
     def _sso_url(self, url):
         return self._sso_base + url
